@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JRQuery - Ejemplos Modernos de Uso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        
+        .demo-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .demo-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .demo-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .highlight {
+            background-color: yellow;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: #28a745;
+            margin: 10px;
+            display: inline-block;
+            color: white;
+            text-align: center;
+            line-height: 100px;
+            border-radius: 5px;
+        }
+        
+        .red {
+            background-color: #dc3545;
+        }
+        
+        .blue {
+            background-color: #007bff;
+        }
+        
+        .green {
+            background-color: #28a745;
+        }
+        
+        .code-example {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        #resultado {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            min-height: 30px;
+        }
+        
+        .lista-ejemplo {
+            margin: 10px 0;
+        }
+        
+        .lista-ejemplo li {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: white;
+            border-radius: 3px;
+        }
+    </style>
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>JRQuery - Ejemplos Modernos de Uso</h1>
+        <p>Librería JavaScript ligera inspirada en jQuery, implementada con ES6 modules sin contaminación global.</p>
+        
+        <!-- Sección de Selectores -->
+        <div class="demo-section">
+            <h3>1. Selectores</h3>
+            <p>JRQuery soporta selectores CSS básicos: ID, clase y etiqueta.</p>
+            
+            <div class="code-example">
+// Selector por ID
+$('#mi-id')
+
+// Selector por clase
+$('.mi-clase')
+
+// Selector por etiqueta
+$('div')
+            </div>
+            
+            <div id="selector-ejemplo">Este es un elemento con ID</div>
+            <p class="mi-clase">Este es un párrafo con clase</p>
+            <span>Otro elemento</span>
+            
+            <button class="demo-button" data-action="selectores">Probar Selectores</button>
+            <div id="selector-resultado"></div>
+        </div>
+        
+        <!-- Sección de Manipulación de Clases -->
+        <div class="demo-section">
+            <h3>2. Manipulación de Clases</h3>
+            <p>Agregar, remover y alternar clases CSS.</p>
+            
+            <div class="code-example">
+// Agregar clase
+$('.box').addClass('red')
+
+// Remover clase
+$('.box').removeClass('green')
+
+// Alternar clase
+$('.box').toggleClass('highlight')
+            </div>
+            
+            <div class="box green">1</div>
+            <div class="box green">2</div>
+            <div class="box green">3</div>
+            
+            <button class="demo-button" data-action="agregar-clase">Agregar Clase Roja</button>
+            <button class="demo-button" data-action="remover-clase">Remover Clase Verde</button>
+            <button class="demo-button" data-action="alternar-clase">Alternar Highlight</button>
+        </div>
+        
+        <!-- Sección de Contenido HTML/Texto -->
+        <div class="demo-section">
+            <h3>3. Manipulación de Contenido</h3>
+            <p>Obtener y establecer contenido HTML y texto.</p>
+            
+            <div class="code-example">
+// Obtener HTML
+const html = $('#contenido').html()
+
+// Establecer HTML
+$('#contenido').html('<strong>Nuevo HTML</strong>')
+
+// Obtener texto
+const texto = $('#contenido').text()
+
+// Establecer texto
+$('#contenido').text('Nuevo texto')
+            </div>
+            
+            <div id="contenido-ejemplo">Contenido original</div>
+            <div id="resultado-contenido"></div>
+            
+            <button class="demo-button" data-action="obtener-html">Obtener HTML</button>
+            <button class="demo-button" data-action="establecer-html">Establecer HTML</button>
+            <button class="demo-button" data-action="obtener-texto">Obtener Texto</button>
+            <button class="demo-button" data-action="establecer-texto">Establecer Texto</button>
+        </div>
+        
+        <!-- Sección de Eventos -->
+        <div class="demo-section">
+            <h3>4. Manejo de Eventos</h3>
+            <p>Agregar y manejar eventos con el método .on()</p>
+            
+            <div class="code-example">
+// Agregar evento click
+$('#boton-evento').on('click', function() {
+    console.log('¡Botón clickeado!')
+})
+
+// Agregar evento mouseover
+$('.elemento').on('mouseover', function() {
+    $(this).addClass('highlight')
+})
+            </div>
+            
+            <button id="boton-evento" class="demo-button">Botón con Evento</button>
+            <button class="demo-button" data-action="evento-trigger">Disparar evento custom</button>
+            
+            <div id="evento-resultado"></div>
+            
+            <p class="evento-parrafo">Pasa el mouse sobre este párrafo</p>
+        </div>
+        
+        <!-- Sección de Iteración -->
+        <div class="demo-section">
+            <h3>5. Iteración con each()</h3>
+            <p>Iterar sobre elementos con el método each().</p>
+            
+            <div class="code-example">
+// Iterar sobre elementos
+$('.lista-item').each(function(index, element) {
+    console.log('Ítem ' + index + ': ' + $(element).text())
+})
+            </div>
+            
+            <ul class="lista-ejemplo">
+                <li class="lista-item">Elemento 1</li>
+                <li class="lista-item">Elemento 2</li>
+                <li class="lista-item">Elemento 3</li>
+                <li class="lista-item">Elemento 4</li>
+            </ul>
+            
+            <button class="demo-button" data-action="iterar-elementos">Iterar Elementos</button>
+            <div id="iteracion-resultado"></div>
+        </div>
+        
+        <!-- Sección de Visibilidad -->
+        <div class="demo-section">
+            <h3>6. Control de Visibilidad</h3>
+            <p>Mostrar, ocultar y alternar visibilidad de elementos.</p>
+            
+            <div class="code-example">
+// Mostrar elementos
+$('#elemento-oculto').show()
+
+// Ocultar elementos
+$('#elemento-visible').hide()
+
+// Alternar visibilidad
+$('.elemento').toggle()
+            </div>
+            
+            <div id="elemento-visibilidad" class="box blue">Elemento de prueba</div>
+            
+            <button class="demo-button" data-action="mostrar-elemento">Mostrar</button>
+            <button class="demo-button" data-action="ocultar-elemento">Ocultar</button>
+            <button class="demo-button" data-action="alternar-visibilidad">Alternar</button>
+        </div>
+        
+        <!-- Sección de Atributos -->
+        <div class="demo-section">
+            <h3>7. Manipulación de Atributos</h3>
+            <p>Obtener y establecer atributos de elementos.</p>
+            
+            <div class="code-example">
+// Obtener atributo
+const href = $('#enlace').attr('href')
+
+// Establecer atributo
+$('#enlace').attr('href', 'https://nuevo-enlace.com')
+
+// Remover atributo
+$('#enlace').removeAttr('title')
+            </div>
+            
+            <a id="enlace-ejemplo" href="https://ejemplo.com" title="Título del enlace">Enlace de ejemplo</a>
+            <br><br>
+            
+            <button class="demo-button" data-action="obtener-atributo">Obtener href</button>
+            <button class="demo-button" data-action="establecer-atributo">Cambiar href</button>
+            <button class="demo-button" data-action="remover-atributo">Remover title</button>
+            <div id="atributo-resultado"></div>
+        </div>
+        
+        <!-- Sección de Estilos -->
+        <div class="demo-section">
+            <h3>8. Aplicación de Estilos</h3>
+            <p>Aplicar estilos CSS directamente a elementos.</p>
+            
+            <div class="code-example">
+// Aplicar estilo individual
+$('#elemento-estilo').css('background-color', 'red')
+
+// Aplicar múltiples estilos
+$('#elemento-estilo').css({
+    'background-color': 'blue',
+    'color': 'white',
+    'padding': '20px'
+})
+            </div>
+            
+            <div id="elemento-estilo" class="box green">Elemento con estilos</div>
+            
+            <button class="demo-button" data-action="aplicar-estilo">Estilo Individual</button>
+            <button class="demo-button" data-action="aplicar-multiples-estilos">Múltiples Estilos</button>
+            <button class="demo-button" data-action="resetear-estilos">Resetear Estilos</button>
+        </div>
+        
+        <!-- Sección de Funciones Utilitarias -->
+        <div class="demo-section">
+            <h3>9. Funciones Utilitarias de JRQuery</h3>
+            <p>Funciones auxiliares que JRQuery proporciona, similares a jQuery.</p>
+            
+            <div class="code-example">
+// Usar $.each() para iterar
+$.each(['a', 'b', 'c'], function(index, value) {
+    console.log(index + ': ' + value);
+});
+
+// Usar $.map() para transformar arrays
+const numeros = [1, 2, 3, 4, 5];
+const dobles = $.map(numeros, function(num) {
+    return num * 2;
+});
+
+// Usar $.trim() para eliminar espacios
+const texto = $.trim('  hello world  ');
+
+// Usar $.type() para detectar tipos
+console.log($.type([])); // 'array'
+console.log($.type({})); // 'object'
+            </div>
+            
+            <button class="demo-button" data-action="probar-utilidades">Probar Utilidades</button>
+            <div id="utilidades-resultado"></div>
+        </div>
+
+        <!-- Sección de Delegación .on() y $.extend -->
+        <div class="demo-section">
+            <h3>10. Delegación .on() y $.extend</h3>
+            <p>Prueba de delegación de eventos y mezcla profunda de objetos.</p>
+            <div class="code-example">
+// Delegación de eventos
+$('#delegacion-contenedor').on('click', '.deleg-item', function(e) {
+    $(this).toggleClass('highlight');
+});
+
+// $.extend profundo
+const merged = $.extend(true, {}, { a: { x: 1, arr: [1] } }, { a: { y: 2, arr: [2, { z: 3 }] } });
+console.log(merged);
+            </div>
+
+            <div id="delegacion-contenedor">
+                <ul id="delegacion-lista" class="lista-ejemplo">
+                    <li class="deleg-item">Item A</li>
+                    <li class="deleg-item">Item B</li>
+                </ul>
+            </div>
+
+            <button class="demo-button" data-action="delegacion-agregar">Agregar item dinámico</button>
+            <button class="demo-button" data-action="delegacion-reset">Reset lista</button>
+            <button class="demo-button" data-action="delegacion-extend">Probar $.extend profundo</button>
+            <div id="delegacion-resultado"></div>
+            <div id="delegacion-extend-resultado"></div>
+        </div>
+
+        <!-- Sección 11: Manipulación del DOM (Fase 2) -->
+        <div class="demo-section" id="fase2-card">
+            <h3>11. Manipulación del DOM (Fase 2)</h3>
+            <p>Ejemplos de <code>.append</code>, <code>.prepend</code>, <code>.before</code>, <code>.after</code>, <code>.empty</code> y <code>.clone</code>.</p>
+
+            <div class="code-example">
+// Ejemplos (módulo ES6 card-phase2.js)
+$('#fase2-list').append('<li>Append N</li>');
+$('#fase2-list').prepend('<li>Prepend N</li>');
+$('#fase2-title').before('<hr>');
+$('#fase2-title').after('<hr>');
+$('#fase2-list').empty();
+const clone = $('#fase2-list').clone(true);
+$('#fase2-clone-target').append(clone);
+            </div>
+
+            <div id="fase2-container">
+                <h4 id="fase2-title">Lista DOM</h4>
+                <ul id="fase2-list" class="lista-ejemplo">
+                    <li class="item">Uno</li>
+                    <li class="item">Dos</li>
+                    <li class="item">Tres</li>
+                </ul>
+
+                <div id="fase2-clone-target"></div>
+
+                <div>
+                    <button class="demo-button" id="btn-append">Append item</button>
+                    <button class="demo-button" id="btn-prepend">Prepend item</button>
+                    <button class="demo-button" id="btn-before">Insertar antes del título</button>
+                    <button class="demo-button" id="btn-after">Insertar después del título</button>
+                    <button class="demo-button" id="btn-empty">Vaciar lista</button>
+                    <button class="demo-button" id="btn-clone">Clonar lista</button>
+                    <button class="demo-button" id="btn-text-fn">Texto con callback (.text(fn))</button>
+                    <button class="demo-button" id="btn-html-fn">HTML con callback (.html(fn))</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 12: Recorrido y filtrado (.closest y .filter) -->
+        <div class="demo-section" id="fase3-card">
+            <h3>12. Recorrido y filtrado: .closest() y .filter()</h3>
+            <p>Ejemplos de búsqueda de ancestros cercanos y filtrado de colecciones.</p>
+
+            <div class="code-example">
+// Delegación y closest
+$('#p3-container').on('click', '.p3-label', function() {
+  const li = $(this).closest('li');
+  li.toggleClass('highlight');
+});
+
+// Filter por selector
+$('#p3-list li').filter('.active')
+
+// Filter por función
+$('#p3-list li').filter((i, el) => el.textContent.includes('JRQuery'))
+ 
+ // Not por selector
+ $('#p3-list li').not('.active')
+ 
+ // Index
+ $('#p3-list li').index() // índice del primero entre sus hermanos
+ $('#p3-list li').index('.active') // índice del primero activo dentro de la colección
+            </div>
+
+            <div id="p3-container">
+                <h4 id="p3-title">Lista de ejemplo</h4>
+                <ul id="p3-list" class="lista-ejemplo">
+                    <li><span class="p3-label">Item Uno JRQuery</span></li>
+                    <li><span class="p3-label">Item Dos</span></li>
+                    <li><span class="p3-label">Item Tres JRQuery</span></li>
+                    <li><span class="p3-label">Item Cuatro</span></li>
+                </ul>
+
+                <div>
+                    <button class="demo-button" id="p3-activate-even">Activar pares</button>
+                    <button class="demo-button" id="p3-filter-active">Filtrar '.active'</button>
+                    <button class="demo-button" id="p3-filter-text">Filtrar texto 'JRQuery'</button>
+                    <button class="demo-button" id="p3-exclude-active">Excluir no activos (.not)</button>
+                    <button class="demo-button" id="p3-index-first">Index del primer LI</button>
+                    <button class="demo-button" id="p3-index-active">Index del primer '.active'</button>
+                    <button class="demo-button" id="p3-reset">Reset</button>
+                </div>
+            </div>
+
+            <div id="p3-result"></div>
+            <div id="p3-filter-result"></div>
+        </div>
+
+    </div>
+
+
+    <!-- Sistema de módulos ES6 sin contaminación global -->
+    <script type="module">
+        import { $ } from './src/jrquery.js';
+        
+        // Sistema de eventos delegados sin funciones globales
+        const eventHandlers = {
+            selectores: () => {
+                const porId = $('#selector-ejemplo').text();
+                const porClase = $('.mi-clase').text();
+                const porEtiqueta = $('span').text();
+                
+                $('#selector-resultado').html(`
+                    <strong>Resultados:</strong><br>
+                    Por ID: ${porId}<br>
+                    Por Clase: ${porClase}<br>
+                    Por Etiqueta: ${porEtiqueta}
+                `);
+            },
+            
+            'agregar-clase': () => {
+                $('.box').addClass('red');
+            },
+            
+            'remover-clase': () => {
+                $('.box').removeClass('green');
+            },
+            
+            'alternar-clase': () => {
+                $('.box').toggleClass('highlight');
+            },
+            
+            'obtener-html': () => {
+                const html = $('#contenido-ejemplo').html();
+                $('#resultado-contenido').text('HTML: ' + html);
+            },
+            
+            'establecer-html': () => {
+                $('#contenido-ejemplo').html('<strong>¡Nuevo HTML!</strong>');
+            },
+            
+            'obtener-texto': () => {
+                const texto = $('#contenido-ejemplo').text();
+                $('#resultado-contenido').text('Texto: ' + texto);
+            },
+            
+            'establecer-texto': () => {
+                $('#contenido-ejemplo').text('¡Nuevo texto!');
+            },
+            
+            'iterar-elementos': () => {
+                let resultado = '';
+                $('.lista-item').each(function(index, element) {
+                    resultado += `Elemento ${index}: ${$(element).text()}<br>`;
+                });
+                $('#iteracion-resultado').html(resultado);
+            },
+            
+            'mostrar-elemento': () => {
+                $('#elemento-visibilidad').show();
+            },
+            
+            'ocultar-elemento': () => {
+                $('#elemento-visibilidad').hide();
+            },
+            
+            'alternar-visibilidad': () => {
+                $('#elemento-visibilidad').toggle();
+            },
+            
+            'obtener-atributo': () => {
+                const href = $('#enlace-ejemplo').attr('href');
+                $('#atributo-resultado').text('href: ' + href);
+            },
+            
+            'establecer-atributo': () => {
+                $('#enlace-ejemplo').attr('href', 'https://github.com');
+                $('#atributo-resultado').text('href cambiado a: https://github.com');
+            },
+            
+            'remover-atributo': () => {
+                $('#enlace-ejemplo').removeAttr('title');
+                $('#atributo-resultado').text('Atributo "title" removido');
+            },
+            
+            'aplicar-estilo': () => {
+                $('#elemento-estilo').css('background-color', 'red');
+            },
+            
+            'aplicar-multiples-estilos': () => {
+                $('#elemento-estilo').css({
+                    'background-color': 'purple',
+                    'border-radius': '50%',
+                    'transform': 'rotate(45deg)'
+                });
+            },
+            
+            'resetear-estilos': () => {
+                $('#elemento-estilo').css({
+                    'background-color': '',
+                    'border-radius': '',
+                    'transform': ''
+                });
+            },
+            
+            'evento-trigger': () => {
+                // Disparar evento personalizado con datos (el handler ya está registrado en DOM ready)
+                $('#boton-evento').trigger('ready:data', { usuario: 'ana', rol: 'admin' });
+            },
+            
+            
+            
+            'probar-utilidades': () => {
+                let resultado = '<strong>Pruebas de utilidades:</strong><br>';
+                
+                // Probar $.each
+                const frutas = ['manzana', 'banana', 'naranja'];
+                let textoEach = '$.each: ';
+                $.each(frutas, function(index, fruta) {
+                    textoEach += fruta + ' ';
+                });
+                resultado += textoEach + '<br>';
+                
+                // Probar $.map
+                const numeros = [1, 2, 3, 4, 5];
+                const dobles = $.map(numeros, function(num) {
+                    return num * 2;
+                });
+                resultado += '$.map: [' + dobles.join(', ') + ']<br>';
+                
+                // Probar $.trim
+                const textoConEspacios = '  Hola Mundo  ';
+                const textoLimpio = $.trim(textoConEspacios);
+                resultado += '$.trim: "' + textoConEspacios + '" → "' + textoLimpio + '"<br>';
+                
+                // Probar $.type
+                resultado += '$.type([]): ' + $.type([]) + '<br>';
+                resultado += '$.type({}): ' + $.type({}) + '<br>';
+                resultado += '$.type("texto"): ' + $.type("texto") + '<br>';
+                resultado += '$.type(123): ' + $.type(123) + '<br>';
+                
+                // Probar funciones de detección
+                resultado += '$.isArray([1,2,3]): ' + $.isArray([1,2,3]) + '<br>';
+                resultado += '$.isFunction(function(){}): ' + $.isFunction(function(){}) + '<br>';
+                resultado += '$.isObject({}): ' + $.isObject({}) + '<br>';
+                
+                // Probar $.extend profundo
+                const a = { cfg: { x: 1, arr: [1, { y: 2 }] } };
+                const b = { cfg: { x: 3, arr: [3, { z: 4 }], extra: true } };
+                const merged = $.extend(true, {}, a, b);
+                resultado += '$.extend(true): ' + JSON.stringify(merged) + '<br>';
+                
+                $('#utilidades-resultado').html(resultado);
+            },
+
+            // Card 10: Delegación y $.extend
+            'delegacion-agregar': () => {
+                const count = $('#delegacion-lista li').length + 1;
+                $('#delegacion-lista').append('<li class="deleg-item">Item ' + count + '</li>');
+                $('#delegacion-resultado').html('Ítem agregado: Item ' + count);
+            },
+            'delegacion-reset': () => {
+                $('#delegacion-lista').html('<li class="deleg-item">Item A</li><li class="deleg-item">Item B</li>');
+                $('#delegacion-resultado').html('Lista reiniciada');
+            },
+            'delegacion-extend': () => {
+                const base = { cfg: { theme: 'light', nested: { a: 1 }, arr: [1] } };
+                const override = { cfg: { theme: 'dark', nested: { b: 2 }, arr: [2, { c: 3 }] } };
+                const merged = $.extend(true, {}, base, override);
+                $('#delegacion-extend-resultado').html('Resultado $.extend(true): ' + JSON.stringify(merged));
+            }
+        };
+        
+        // Usar $(document).ready() como en jQuery
+        $(document).ready(function() {
+            console.log('JRQuery Modern está listo!');
+            
+            // Evento de párrafo con hover
+            $('.evento-parrafo').on('mouseover', function() {
+                $(this).addClass('highlight');
+            });
+            
+            $('.evento-parrafo').on('mouseout', function() {
+                $(this).removeClass('highlight');
+            });
+            
+            // Evento del botón principal
+            $('#boton-evento').on('click', function() {
+                $('#evento-resultado').html('<strong>¡Evento click ejecutado!</strong> Hora: ' + new Date().toLocaleTimeString());
+            });
+
+            // Delegación para la Card 10: clicks en items dinámicos
+            $('#delegacion-contenedor').on('click', '.deleg-item', function(e) {
+                $(this).toggleClass('highlight');
+                $('#delegacion-resultado').html('Click en ' + $(this).text());
+            });
+
+            // Registrar handler para el evento custom (ready:data) sin namespaces
+            $('#boton-evento').on('ready:data', function(e, data) {
+                $('#evento-resultado').html('Payload recibido: ' + JSON.stringify(data));
+            });
+            
+            // Sistema de delegación de eventos para todos los botones (JRQuery)
+            $('.demo-button[data-action]').on('click', function(e) {
+                e.preventDefault();
+                const action = $(this).attr('data-action');
+                if (eventHandlers[action]) {
+                    eventHandlers[action]();
+                }
+            });
+        });
+    </script>
+    <script type="module" src="./src/modules/card-phase2.js"></script>
+    <script type="module" src="./src/modules/card-phase3.js"></script>
+</body>
+</html>

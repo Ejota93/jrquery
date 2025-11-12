@@ -1,0 +1,19 @@
+{
+  "name": "jrquery",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Librería JavaScript ligera inspirada en jQuery con ES6 modules",
+  "main": "src/jrquery.js",
+  "keywords": ["javascript", "dom", "jquery", "library", "es6"],
+  "author": "Tu nombre",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.2.2"
+  }
+}

@@ -1,0 +1,105 @@
+/* Estilos base para JRQuery */
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  line-height: 1.6;
+  background-color: #f5f5f5;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Estilos de clases usadas en los ejemplos */
+.demo-section {
+  margin: 30px 0;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.demo-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.demo-button:hover {
+  background-color: #0056b3;
+}
+
+.box {
+  width: 100px;
+  height: 100px;
+  background-color: #28a745;
+  margin: 10px;
+  display: inline-block;
+  color: white;
+  text-align: center;
+  line-height: 100px;
+  border-radius: 5px;
+}
+
+.red { background-color: #dc3545; }
+.blue { background-color: #007bff; }
+.green { background-color: #28a745; }
+
+.highlight {
+  background-color: yellow;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.hidden { display: none; }
+
+.lista-ejemplo { margin: 10px 0; }
+.lista-ejemplo li {
+  margin: 5px 0;
+  padding: 5px;
+  background-color: white;
+  border-radius: 3px;
+}
+
+/* Estados adicionales usados por Card 12 */
+.active {
+  background-color: #fff3cd; /* amarillo suave */
+  border: 1px solid #ffe8a1;
+}
+
+/* Líneas decorativas usadas por Card 11 */
+hr.line-before {
+  border: 0;
+  border-top: 2px solid #6c757d;
+  margin: 8px 0;
+}
+
+hr.line-after {
+  border: 0;
+  border-bottom: 2px solid #6c757d;
+  margin: 8px 0;
+}
