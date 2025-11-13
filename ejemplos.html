@@ -48,6 +48,65 @@
         .highlight {
             background-color: yellow;
             padding: 2px 5px;
+        }
+        
+        /* Estilos para demos AJAX */
+        .ajax-demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .ajax-demo-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        
+        .ajax-demo-item h5 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .ajax-result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+            min-height: 20px;
+            font-size: 0.9em;
+        }
+        
+        .load-container {
+            margin-top: 10px;
+            padding: 15px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            min-height: 50px;
+            background-color: #fafafa;
+        }
+        
+        .loaded-content {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .loaded-content h4 {
+            margin-top: 0;
+            color: #0056b3;
+        }
+        
+        .loaded-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .loaded-content li {
+            margin: 5px 0;
             border-radius: 3px;
         }
         
@@ -370,6 +429,7 @@ console.log(merged);
             <div id="delegacion-extend-resultado"></div>
         </div>
 
+
         <!-- Sección 11: Manipulación del DOM (Fase 2) -->
         <div class="demo-section" id="fase2-card">
             <h3>11. Manipulación del DOM (Fase 2)</h3>
@@ -457,6 +517,156 @@ $('#p3-list li').filter((i, el) => el.textContent.includes('JRQuery'))
 
             <div id="p3-result"></div>
             <div id="p3-filter-result"></div>
+        </div>
+
+        
+        <!-- Sección 13: Fase 1 - Selección y recorrido -->
+        <div class="demo-section" id="fase1-card">
+            <h3>13. Fase 1 - Selección y recorrido</h3>
+            <p>Ejemplos de <code>.is</code>, <code>.siblings</code>, <code>.next</code>, <code>.prev</code>, <code>.first</code>, <code>.last</code>, <code>.eq</code> y encadenamiento.</p>
+
+            <div class="code-example">
+// Verificar coincidencias
+if ($('.item').is('.active')) {
+    console.log('Hay elementos activos');
+}
+
+// Navegación entre hermanos
+const active = $('.item.active').first();
+const siblings = active.siblings('.item');
+const next = active.next();
+const prev = active.prev();
+
+// Encadenamiento con first/last/eq
+$('.list')
+    .first()           // Primer elemento
+    .addClass('first')
+    .next()            // Siguiente hermano
+    .addClass('next');
+
+// Obtener elemento por índice
+const middle = $('.item').eq(Math.floor($('.item').length / 2));
+            </div>
+
+            <div id="fase1-demo-container">
+                <h4>Demo de navegación</h4>
+                <ul id="fase1-list" class="lista-ejemplo">
+                    <li class="demo-item">Elemento 1</li>
+                    <li class="demo-item active">Elemento 2 (activo)</li>
+                    <li class="demo-item">Elemento 3</li>
+                    <li class="demo-item">Elemento 4</li>
+                    <li class="demo-item">Elemento 5</li>
+                </ul>
+
+                <div id="fase1-results">
+                    <div><strong>Resultados:</strong></div>
+                    <div id="is-result">Estado: No verificado</div>
+                    <div id="siblings-result">Hermanos: No calculados</div>
+                    <div id="next-prev-result">Navegación: No realizada</div>
+                    <div id="chaining-result">Encadenamiento: No ejecutado</div>
+                    <div id="eq-result">Elemento medio: No seleccionado</div>
+                </div>
+
+                <div>
+                    <button class="demo-button" id="btn-is-demo">Verificar con .is()</button>
+                    <button class="demo-button" id="btn-siblings-demo">Obtener hermanos</button>
+                    <button class="demo-button" id="btn-next-prev-demo">Navegar next/prev</button>
+                    <button class="demo-button" id="btn-chaining-demo">Demo encadenamiento</button>
+                    <button class="demo-button" id="btn-eq-demo">Seleccionar elemento medio</button>
+                    <button class="demo-button" id="btn-reset-fase1">Reiniciar demo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 14: Fase 4 - Utilidades AJAX -->
+        <div class="demo-section" id="fase4-card">
+            <h3>14. Fase 4 - Utilidades AJAX</h3>
+            <p>Ejemplos de <code>$.ajax</code>, <code>$.get</code>, <code>$.post</code>, <code>$.getJSON</code> y <code>.load()</code> usando fetch API.</p>
+
+            <div class="code-example">
+// Petición GET simple
+$.get('https://api.example.com/users', function(data) {
+    console.log('Usuarios:', data);
+});
+
+// Petición POST con datos
+$.post('https://api.example.com/posts', {
+    title: 'Nuevo Post',
+    body: 'Contenido del post'
+}, function(response) {
+    console.log('Post creado:', response);
+});
+
+// Petición GET esperando JSON
+$.getJSON('https://api.example.com/data.json', function(json) {
+    console.log('Datos JSON:', json);
+});
+
+// Petición AJAX completa
+$.ajax({
+    url: 'https://api.example.com/data',
+    method: 'GET',
+    timeout: 5000,
+    success: function(data) {
+        console.log('Éxito:', data);
+    },
+    error: function(xhr, status, error) {
+        console.error('Error:', error);
+    }
+});
+
+// Cargar contenido en elemento
+$('#container').load('contenido.html');
+            </div>
+
+            <div id="fase4-demo-container">
+                <h4>Demo de AJAX</h4>
+                
+                <div class="ajax-demo-grid">
+                    <div class="ajax-demo-item">
+                        <h5>$.get() - Obtener datos</h5>
+                        <button class="demo-button" id="btn-get-demo">Ejecutar GET</button>
+                        <div id="get-result" class="ajax-result"></div>
+                    </div>
+                    
+                    <div class="ajax-demo-item">
+                        <h5>$.post() - Enviar datos</h5>
+                        <button class="demo-button" id="btn-post-demo">Ejecutar POST</button>
+                        <div id="post-result" class="ajax-result"></div>
+                    </div>
+                    
+                    <div class="ajax-demo-item">
+                        <h5>$.getJSON() - Obtener JSON</h5>
+                        <button class="demo-button" id="btn-getjson-demo">Ejecutar getJSON</button>
+                        <div id="getjson-result" class="ajax-result"></div>
+                    </div>
+                    
+                    <div class="ajax-demo-item">
+                        <h5>$.ajax() - Petición completa</h5>
+                        <button class="demo-button" id="btn-ajax-demo">Ejecutar AJAX</button>
+                        <div id="ajax-result" class="ajax-result"></div>
+                    </div>
+                    
+                    <div class="ajax-demo-item">
+                        <h5>.load() - Cargar contenido</h5>
+                        <button class="demo-button" id="btn-load-demo">Cargar Contenido</button>
+                        <div id="load-container" class="load-container">
+                            <p>Contenedor vacío - haz clic en "Cargar Contenido"</p>
+                        </div>
+                        <div id="load-result" class="ajax-result"></div>
+                    </div>
+                    
+                    <div class="ajax-demo-item">
+                        <h5>Manejo de errores</h5>
+                        <button class="demo-button" id="btn-error-demo">Forzar Error</button>
+                        <div id="error-result" class="ajax-result"></div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="demo-button" id="btn-clear-ajax">Limpiar Resultados</button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -631,6 +841,262 @@ $('#p3-list li').filter((i, el) => el.textContent.includes('JRQuery'))
                 const override = { cfg: { theme: 'dark', nested: { b: 2 }, arr: [2, { c: 3 }] } };
                 const merged = $.extend(true, {}, base, override);
                 $('#delegacion-extend-resultado').html('Resultado $.extend(true): ' + JSON.stringify(merged));
+            },
+            
+            // Fase 1 - Selección y recorrido
+            'is-demo': () => {
+                const items = $('.demo-item');
+                const isActive = items.is('.active');
+                const isFirstEven = items.first().is(function(index) {
+                    return index % 2 === 0;
+                });
+                
+                $('#is-result').html(`
+                    <strong>Resultados .is():</strong><br>
+                    ¿Hay elementos activos? ${isActive}<br>
+                    ¿Primer elemento par? ${isFirstEven}
+                `);
+                
+                console.log('Fase 1 - .is() demo:', { isActive, isFirstEven });
+            },
+            
+            'siblings-demo': () => {
+                const activeItem = $('.demo-item.active').first();
+                if (activeItem.length > 0) {
+                    const siblings = activeItem.siblings('.demo-item');
+                    
+                    // Resaltar hermanos temporalmente
+                    siblings.addClass('highlight');
+                    setTimeout(() => siblings.removeClass('highlight'), 1500);
+                    
+                    $('#siblings-result').html(`
+                        <strong>Hermanos encontrados:</strong> ${siblings.length}<br>
+                        Elementos resaltados temporalmente
+                    `);
+                } else {
+                    $('#siblings-result').html('<strong>Error:</strong> No hay elemento activo');
+                }
+            },
+            
+            'next-prev-demo': () => {
+                const current = $('.demo-item.active').first();
+                if (current.length > 0) {
+                    const next = current.next('.demo-item');
+                    const prev = current.prev('.demo-item');
+                    
+                    // Mover clase activa
+                    current.removeClass('active');
+                    
+                    if (next.length > 0) {
+                        next.addClass('active');
+                        $('#next-prev-result').html('<strong>Navegación:</strong> Movido al siguiente elemento');
+                    } else if (prev.length > 0) {
+                        prev.addClass('active');
+                        $('#next-prev-result').html('<strong>Navegación:</strong> Movido al elemento anterior');
+                    } else {
+                        // Si no hay siguiente ni anterior, volver al primero
+                        $('.demo-item').first().addClass('active');
+                        $('#next-prev-result').html('<strong>Navegación:</strong> Vuelto al primer elemento');
+                    }
+                }
+            },
+            
+            'chaining-demo': () => {
+                // Limpiar clases anteriores
+                $('.demo-item').removeClass('chained chained-sibling');
+                
+                // Encadenamiento: primer elemento -> agregar clase -> obtener siguiente
+                const result = $('.demo-item')
+                    .first()
+                    .addClass('chained')
+                    .next('.demo-item')
+                    .addClass('chained-sibling');
+                
+                $('#chaining-result').html(`
+                    <strong>Encadenamiento completado:</strong><br>
+                    Elementos procesados: ${result.length}<br>
+                    Clases aplicadas: chained, chained-sibling
+                `);
+                
+                // Limpiar después de 3 segundos
+                setTimeout(() => {
+                    $('.demo-item').removeClass('chained chained-sibling');
+                }, 3000);
+            },
+            
+            'eq-demo': () => {
+                const items = $('.demo-item');
+                const middleIndex = Math.floor(items.length / 2);
+                
+                // Limpiar resaltados anteriores
+                $('.demo-item').removeClass('middle-highlight');
+                
+                // Obtener elemento del medio y resaltar
+                const middleItem = items.eq(middleIndex);
+                middleItem.addClass('middle-highlight');
+                
+                $('#eq-result').html(`
+                    <strong>Elemento medio seleccionado:</strong><br>
+                    Índice: ${middleIndex}<br>
+                    Texto: ${middleItem.text()}
+                `);
+                
+                // Limpiar después de 2 segundos
+                setTimeout(() => {
+                    middleItem.removeClass('middle-highlight');
+                }, 2000);
+            },
+            
+            'reset-fase1': () => {
+                // Limpiar todas las clases de demo
+                $('.demo-item').removeClass('active highlight chained chained-sibling middle-highlight');
+                
+                // Restablecer elemento activo inicial
+                $('.demo-item').first().addClass('active');
+                
+                // Limpiar resultados
+                $('#is-result').text('Estado: No verificado');
+                $('#siblings-result').text('Hermanos: No calculados');
+                $('#next-prev-result').text('Navegación: No realizada');
+                $('#chaining-result').text('Encadenamiento: No ejecutado');
+                $('#eq-result').text('Elemento medio: No seleccionado');
+            },
+            
+            // Fase 4 - Utilidades AJAX
+            'get-demo': () => {
+                const $result = $('#get-result');
+                $result.text('Cargando...');
+                
+                $.get('https://jsonplaceholder.typicode.com/posts/1')
+                    .done(function(data) {
+                        $result.html(`
+                            <strong>POST #${data.id}:</strong><br>
+                            <strong>Título:</strong> ${data.title}<br>
+                            <strong>Body:</strong> ${data.body.substring(0, 100)}...
+                        `);
+                    })
+                    .fail(function(xhr, status, error) {
+                        $result.text(`Error: ${error}`);
+                    });
+            },
+            
+            'post-demo': () => {
+                const $result = $('#post-result');
+                $result.text('Enviando...');
+                
+                const postData = {
+                    title: 'JRQuery Test Post',
+                    body: 'Este es un post de prueba desde JRQuery AJAX',
+                    userId: 1
+                };
+                
+                $.post('https://jsonplaceholder.typicode.com/posts', postData)
+                    .done(function(data) {
+                        $result.html(`
+                            <strong>Post creado #${data.id}:</strong><br>
+                            <strong>Título:</strong> ${data.title}<br>
+                            <strong>Usuario:</strong> ${data.userId}
+                        `);
+                    })
+                    .fail(function(xhr, status, error) {
+                        $result.text(`Error: ${error}`);
+                    });
+            },
+            
+            'getjson-demo': () => {
+                const $result = $('#getjson-result');
+                $result.text('Cargando JSON...');
+                
+                $.getJSON('https://jsonplaceholder.typicode.com/users/1')
+                    .done(function(user) {
+                        $result.html(`
+                            <strong>Usuario:</strong> ${user.name}<br>
+                            <strong>Email:</strong> ${user.email}<br>
+                            <strong>Ciudad:</strong> ${user.address.city}
+                        `);
+                    })
+                    .fail(function(xhr, status, error) {
+                        $result.text(`Error: ${error}`);
+                    });
+            },
+            
+            'ajax-demo': () => {
+                const $result = $('#ajax-result');
+                $result.text('Cargando con AJAX...');
+                
+                $.ajax({
+                    url: 'https://jsonplaceholder.typicode.com/todos/1',
+                    method: 'GET',
+                    dataType: 'json',
+                    timeout: 5000,
+                    success: function(data) {
+                        $result.html(`
+                            <strong>Tarea #${data.id}:</strong><br>
+                            <strong>Título:</strong> ${data.title}<br>
+                            <strong>Completada:</strong> ${data.completed ? 'Sí' : 'No'}
+                        `);
+                    },
+                    error: function(xhr, status, error) {
+                        $result.text(`Error AJAX: ${status} - ${error}`);
+                    }
+                });
+            },
+            
+            'load-demo': () => {
+                const $container = $('#load-container');
+                const $result = $('#load-result');
+                
+                // Crear contenido HTML de ejemplo
+                const sampleContent = `
+                    <div class="loaded-content">
+                        <h4>Contenido Cargado Dinámicamente</h4>
+                        <p>Este contenido fue cargado usando el método .load() de JRQuery.</p>
+                        <ul>
+                            <li>✅ Carga asíncrona</li>
+                            <li>✅ Integración con AJAX</li>
+                            <li>✅ Actualización del DOM</li>
+                        </ul>
+                        <small>Contenido generado el ${new Date().toLocaleTimeString()}</small>
+                    </div>
+                `;
+                
+                $result.text('Cargando contenido...');
+                
+                // Simular carga asíncrona
+                setTimeout(() => {
+                    $container.html(sampleContent);
+                    $result.text('Contenido cargado exitosamente');
+                    
+                    setTimeout(() => $result.text(''), 2000);
+                }, 1000);
+            },
+            
+            'error-demo': () => {
+                const $result = $('#error-result');
+                $result.text('Intentando petición con error...');
+                
+                // Intencionalmente usar una URL que no existe
+                $.ajax({
+                    url: 'https://jsonplaceholder.typicode.com/posts/999999',
+                    method: 'GET',
+                    timeout: 3000,
+                    success: function(data) {
+                        $result.text('Datos cargados: ' + JSON.stringify(data));
+                    },
+                    error: function(xhr, status, error) {
+                        $result.html(`
+                            <strong>Error capturado:</strong><br>
+                            <strong>Estado:</strong> ${xhr.status}<br>
+                            <strong>Texto:</strong> ${xhr.statusText}<br>
+                            <strong>Error:</strong> ${error}
+                        `);
+                    }
+                });
+            },
+            
+            'clear-ajax': () => {
+                $('#get-result, #post-result, #getjson-result, #ajax-result, #load-result, #error-result').text('');
+                $('#load-container').html('<p>Contenedor vacío - haz clic en "Cargar Contenido"</p>');
             }
         };
         
@@ -673,7 +1139,9 @@ $('#p3-list li').filter((i, el) => el.textContent.includes('JRQuery'))
             });
         });
     </script>
+    <script type="module" src="./src/modules/card-phase1.js"></script>
     <script type="module" src="./src/modules/card-phase2.js"></script>
     <script type="module" src="./src/modules/card-phase3.js"></script>
+    <script type="module" src="./src/modules/card-phase4.js"></script>
 </body>
 </html>

@@ -34,12 +34,17 @@ class JRQuery {
         if (!selector) return [];
         
         // Si ya es un array o NodeList, convertir a array
-        if (Array.isArray(selector) || selector instanceof NodeList) {
+        if (Array.isArray(selector) || selector instanceof NodeList || (typeof HTMLCollection !== 'undefined' && selector instanceof HTMLCollection)) {
             return Array.from(selector);
         }
         
         // Si es un elemento del DOM
         if (selector instanceof Element) {
+            return [selector];
+        }
+        
+        // Soporte para Document y DocumentFragment
+        if ((typeof Document !== 'undefined' && selector instanceof Document) || (typeof DocumentFragment !== 'undefined' && selector instanceof DocumentFragment)) {
             return [selector];
         }
         
@@ -62,9 +67,10 @@ class JRQuery {
      */
     addClass(className) {
         if (!className) return this;
-        
+        const tokens = String(className).trim().split(/\s+/).filter(Boolean);
+        if (tokens.length === 0) return this;
         this.elements.forEach(element => {
-            element.classList.add(className);
+            element.classList.add(...tokens);
         });
         
         return this;
@@ -77,9 +83,10 @@ class JRQuery {
      */
     removeClass(className) {
         if (!className) return this;
-        
+        const tokens = String(className).trim().split(/\s+/).filter(Boolean);
+        if (tokens.length === 0) return this;
         this.elements.forEach(element => {
-            element.classList.remove(className);
+            element.classList.remove(...tokens);
         });
         
         return this;
@@ -92,9 +99,10 @@ class JRQuery {
      */
     toggleClass(className) {
         if (!className) return this;
-        
+        const tokens = String(className).trim().split(/\s+/).filter(Boolean);
+        if (tokens.length === 0) return this;
         this.elements.forEach(element => {
-            element.classList.toggle(className);
+            tokens.forEach(t => element.classList.toggle(t));
         });
         
         return this;
@@ -117,12 +125,17 @@ class JRQuery {
                 const current = element.innerHTML;
                 const next = html.call(element, i, current);
                 if (next !== undefined && next !== null) {
-                    element.innerHTML = String(next);
+                    const str = String(next);
+                    if (str !== current) {
+                        element.innerHTML = str;
+                    }
                 }
             });
         } else {
             this.elements.forEach(element => {
-                element.innerHTML = html;
+                if (element.innerHTML !== html) {
+                    element.innerHTML = html;
+                }
             });
         }
         
@@ -146,12 +159,17 @@ class JRQuery {
                 const current = element.textContent;
                 const next = text.call(element, i, current);
                 if (next !== undefined && next !== null) {
-                    element.textContent = String(next);
+                    const str = String(next);
+                    if (str !== current) {
+                        element.textContent = str;
+                    }
                 }
             });
         } else {
             this.elements.forEach(element => {
-                element.textContent = text;
+                if (element.textContent !== text) {
+                    element.textContent = text;
+                }
             });
         }
         
@@ -166,7 +184,7 @@ class JRQuery {
     append(content) {
         if (content == null) return this;
 
-        const isJRQuery = (val) => val && typeof val === 'object' && Array.isArray(val.elements);
+        const isJRQuery = (val) => (val instanceof JRQuery) || (val && typeof val === 'object' && Array.isArray(val.elements));
 
         // String HTML
         if (typeof content === 'string') {
@@ -209,7 +227,7 @@ class JRQuery {
     prepend(content) {
         if (content == null) return this;
 
-        const isJRQuery = (val) => val && typeof val === 'object' && Array.isArray(val.elements);
+        const isJRQuery = (val) => (val instanceof JRQuery) || (val && typeof val === 'object' && Array.isArray(val.elements));
 
         if (typeof content === 'string') {
             this.elements.forEach(element => {
@@ -255,7 +273,7 @@ class JRQuery {
      */
     before(content) {
         if (content == null) return this;
-        const isJRQuery = (val) => val && typeof val === 'object' && Array.isArray(val.elements);
+        const isJRQuery = (val) => (val instanceof JRQuery) || (val && typeof val === 'object' && Array.isArray(val.elements));
 
         if (typeof content === 'string') {
             this.elements.forEach(element => {
@@ -297,7 +315,7 @@ class JRQuery {
      */
     after(content) {
         if (content == null) return this;
-        const isJRQuery = (val) => val && typeof val === 'object' && Array.isArray(val.elements);
+        const isJRQuery = (val) => (val instanceof JRQuery) || (val && typeof val === 'object' && Array.isArray(val.elements));
 
         if (typeof content === 'string') {
             this.elements.forEach(element => {
@@ -338,7 +356,10 @@ class JRQuery {
      */
     remove() {
         this.elements.forEach(el => {
-            if (el && el.parentNode) {
+            if (!el) return;
+            if (typeof el.remove === 'function') {
+                el.remove();
+            } else if (el.parentNode) {
                 el.parentNode.removeChild(el);
             }
         });
@@ -409,26 +430,7 @@ class JRQuery {
      * @param {string} [value] - Valor CSS (si property es string)
      * @returns {JRQuery} Instancia actual para chaining
      */
-    css(property, value) {
-        if (!property) return this;
-        
-        // Si property es un objeto, aplicar múltiples estilos
-        if (typeof property === 'object') {
-            this.elements.forEach(element => {
-                Object.assign(element.style, property);
-            });
-            return this;
-        }
-        
-        // Si solo hay una propiedad
-        if (typeof property === 'string' && value !== undefined) {
-            this.elements.forEach(element => {
-                element.style[property] = value;
-            });
-        }
-        
-        return this;
-    }
+    
 
     /**
      * Manejador de eventos
@@ -690,13 +692,16 @@ class JRQuery {
      */
     find(selector) {
         if (!selector) return new JRQuery([]);
-        
         const foundElements = [];
+        const seen = new Set();
         this.elements.forEach(element => {
-            const matches = element.querySelectorAll(selector);
-            foundElements.push(...Array.from(matches));
+            element.querySelectorAll(selector).forEach(node => {
+                if (!seen.has(node)) {
+                    seen.add(node);
+                    foundElements.push(node);
+                }
+            });
         });
-        
         return new JRQuery(foundElements);
     }
 
@@ -705,10 +710,15 @@ class JRQuery {
      * @returns {JRQuery} Nueva instancia con los elementos padres
      */
     parent() {
-        const parents = this.elements
-            .map(element => element.parentElement)
-            .filter(parent => parent !== null);
-        
+        const parents = [];
+        const seen = new Set();
+        this.elements.forEach(element => {
+            const p = element.parentElement;
+            if (p && !seen.has(p)) {
+                seen.add(p);
+                parents.push(p);
+            }
+        });
         return new JRQuery(parents);
     }
 
@@ -718,10 +728,15 @@ class JRQuery {
      */
     children() {
         const children = [];
+        const seen = new Set();
         this.elements.forEach(element => {
-            children.push(...Array.from(element.children));
+            Array.from(element.children).forEach(child => {
+                if (!seen.has(child)) {
+                    seen.add(child);
+                    children.push(child);
+                }
+            });
         });
-        
         return new JRQuery(children);
     }
 
@@ -731,9 +746,14 @@ class JRQuery {
      */
     show() {
         this.elements.forEach(element => {
-            element.style.display = 'block';
+            const computed = window.getComputedStyle(element);
+            if (computed.display === 'none') {
+                element.style.display = '';
+                if (window.getComputedStyle(element).display === 'none') {
+                    element.style.display = 'block';
+                }
+            }
         });
-        
         return this;
     }
 
@@ -743,9 +763,11 @@ class JRQuery {
      */
     hide() {
         this.elements.forEach(element => {
-            element.style.display = 'none';
+            const computed = window.getComputedStyle(element);
+            if (computed.display !== 'none') {
+                element.style.display = 'none';
+            }
         });
-        
         return this;
     }
 
@@ -755,39 +777,42 @@ class JRQuery {
      */
     toggle() {
         this.elements.forEach(element => {
-            if (element.style.display === 'none') {
-                element.style.display = 'block';
+            const computed = window.getComputedStyle(element);
+            if (computed.display === 'none') {
+                element.style.display = '';
+                if (window.getComputedStyle(element).display === 'none') {
+                    element.style.display = 'block';
+                }
             } else {
                 element.style.display = 'none';
             }
         });
-        
         return this;
     }
 
     /**
-     * Obtiene el primer elemento de la colección
-     * @returns {Element|null} Primer elemento o null
+     * Obtiene el primer elemento de la colección como nueva instancia JRQuery
+     * @returns {JRQuery} Nueva instancia JRQuery con el primer elemento
      */
     first() {
-        return this.elements[0] || null;
+        return new JRQuery(this.elements[0] || [], document);
     }
 
     /**
-     * Obtiene el último elemento de la colección
-     * @returns {Element|null} Último elemento o null
+     * Obtiene el último elemento de la colección como nueva instancia JRQuery
+     * @returns {JRQuery} Nueva instancia JRQuery con el último elemento
      */
     last() {
-        return this.elements[this.elements.length - 1] || null;
+        return new JRQuery(this.elements[this.elements.length - 1] || [], document);
     }
 
     /**
-     * Obtiene un elemento específico por índice
+     * Obtiene un elemento específico por índice como nueva instancia JRQuery
      * @param {number} index - Índice del elemento
-     * @returns {Element|null} Elemento en el índice o null
+     * @returns {JRQuery} Nueva instancia JRQuery con el elemento en el índice
      */
     eq(index) {
-        return this.elements[index] || null;
+        return new JRQuery(this.elements[index] || [], document);
     }
 
     /**
@@ -901,6 +926,106 @@ class JRQuery {
         }
         const target = needle instanceof JRQuery ? needle.elements[0] : needle;
         return this.elements.indexOf(target);
+    }
+
+    /**
+     * Verifica si al menos un elemento coincide con el selector o función
+     * @param {string|Function|Element} selector - Selector CSS, función o elemento a verificar
+     * @returns {boolean} true si algún elemento coincide, false en caso contrario
+     */
+    is(selector) {
+        if (!selector || this.elements.length === 0) return false;
+        
+        // Si es una función, ejecutarla con cada elemento
+        if (typeof selector === 'function') {
+            return this.elements.some((el, index) => {
+                return selector.call(el, index, el);
+            });
+        }
+        
+        // Si es un elemento del DOM
+        if (selector instanceof Element) {
+            return this.elements.includes(selector);
+        }
+        
+        // Si es un selector CSS
+        if (typeof selector === 'string') {
+            const sel = selector.trim();
+            return this.elements.some(el => el.matches && el.matches(sel));
+        }
+        
+        return false;
+    }
+
+    /**
+     * Obtiene los hermanos de los elementos (opcionalmente filtrados por selector)
+     * @param {string} [selector] - Selector CSS opcional para filtrar hermanos
+     * @returns {JRQuery} Nueva instancia con los hermanos
+     */
+    siblings(selector) {
+        const siblings = [];
+        const selectorTrimmed = selector ? selector.trim() : null;
+        
+        this.elements.forEach(element => {
+            if (element.parentElement) {
+                const parentChildren = Array.from(element.parentElement.children);
+                parentChildren.forEach(child => {
+                    if (child !== element && !siblings.includes(child)) {
+                        if (!selectorTrimmed || (child.matches && child.matches(selectorTrimmed))) {
+                            siblings.push(child);
+                        }
+                    }
+                });
+            }
+        });
+        
+        return new JRQuery(siblings);
+    }
+
+    /**
+     * Obtiene el siguiente hermano de cada elemento (opcionalmente filtrado por selector)
+     * @param {string} [selector] - Selector CSS opcional para filtrar el siguiente elemento
+     * @returns {JRQuery} Nueva instancia con los siguientes elementos
+     */
+    next(selector) {
+        const nextElements = [];
+        const selectorTrimmed = selector ? selector.trim() : null;
+        
+        this.elements.forEach(element => {
+            let next = element.nextElementSibling;
+            while (next) {
+                if (!selectorTrimmed || (next.matches && next.matches(selectorTrimmed))) {
+                    nextElements.push(next);
+                    break;
+                }
+                next = next.nextElementSibling;
+            }
+        });
+        
+        return new JRQuery(nextElements);
+    }
+
+    /**
+     * Obtiene el hermano anterior de cada elemento (opcionalmente filtrado por selector)
+     * @param {string} [selector] - Selector CSS opcional para filtrar el elemento anterior
+     * @returns {JRQuery} Nueva instancia con los elementos anteriores
+     */
+    prev(selector) {
+        const prevElements = [];
+        const selectorTrimmed = selector ? selector.trim() : null;
+        
+        this.elements.forEach(element => {
+            let prev = element.previousElementSibling;
+            while (prev) {
+                if (!selectorTrimmed || (prev.matches && prev.matches(selectorTrimmed))) {
+                    prevElements.push(prev);
+                    break;
+                }
+                prev = prev.previousElementSibling;
+            }
+        });
+        
+        return new JRQuery(prevElements);
     }
 }
 
@@ -1067,12 +1192,273 @@ $.toJSON = function(obj) {
 };
 
 /**
+ * Realiza peticiones AJAX usando fetch API
+ * @param {string|Object} url - URL del recurso o objeto de configuración
+ * @param {Object} [options] - Opciones de configuración
+ * @returns {Promise} Promesa que resuelve con la respuesta
+ */
+$.ajax = function(url, options = {}) {
+    // Si el primer parámetro es un objeto, usarlo como configuración
+    if (typeof url === 'object' && url !== null) {
+        options = url;
+        url = options.url;
+    }
+    
+    if (!url) {
+        throw new Error('URL is required for AJAX request');
+    }
+    
+    // Configuración por defecto siguiendo jQuery
+    const config = {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: null,
+        dataType: 'auto', // auto, json, text, html
+        timeout: 0,
+        ...options
+    };
+    
+    // Procesar datos según el tipo
+    if (config.data) {
+        if (config.method === 'GET') {
+            // Para GET, agregar datos a la URL
+            const params = new URLSearchParams(config.data);
+            url += (url.includes('?') ? '&' : '?') + params.toString();
+        } else {
+            // Para otros métodos, enviar en el body
+            if (typeof config.data === 'object' && !(config.data instanceof FormData)) {
+                config.body = JSON.stringify(config.data);
+                config.headers['Content-Type'] = 'application/json';
+            } else {
+                config.body = config.data;
+            }
+        }
+    }
+    
+    // Crear promesa con timeout si es necesario
+    let fetchPromise = fetch(url, {
+        method: config.method,
+        headers: config.headers,
+        body: config.body,
+        ...config
+    });
+    
+    // Aplicar timeout si está configurado
+    if (config.timeout > 0) {
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Request timeout')), config.timeout);
+        });
+        fetchPromise = Promise.race([fetchPromise, timeoutPromise]);
+    }
+    
+    // Añadir métodos .done() y .fail() para compatibilidad con jQuery
+    const jqueryPromise = fetchPromise.then(response => {
+        // Crear objeto xhr-like para compatibilidad
+        const xhr = {
+            status: response.status,
+            statusText: response.statusText,
+            responseText: null,
+            responseJSON: null
+        };
+        
+        // Determinar tipo de respuesta
+        const contentType = response.headers.get('content-type') || '';
+        const isJson = contentType.includes('application/json');
+        
+        // Procesar según dataType esperado
+        let dataPromise;
+        if (config.dataType === 'json' || (config.dataType === 'auto' && isJson)) {
+            dataPromise = response.json().then(data => {
+                xhr.responseJSON = data;
+                return data;
+            });
+        } else if (config.dataType === 'text') {
+            dataPromise = response.text().then(data => {
+                xhr.responseText = data;
+                return data;
+            });
+        } else {
+            // Por defecto, intentar texto
+            dataPromise = response.text().then(data => {
+                xhr.responseText = data;
+                // Si es JSON válido, parsearlo
+                if (isJson) {
+                    try {
+                        const jsonData = JSON.parse(data);
+                        xhr.responseJSON = jsonData;
+                        return jsonData;
+                    } catch (e) {
+                        return data;
+                    }
+                }
+                return data;
+            });
+        }
+        
+        return dataPromise.then(data => {
+            // Llamar callbacks según el estado
+            if (response.ok) {
+                if (config.success) {
+                    config.success(data, response.statusText, xhr);
+                }
+                return data;
+            } else {
+                const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+                error.response = response;
+                if (config.error) {
+                    config.error(xhr, response.statusText, error);
+                }
+                throw error;
+            }
+        });
+    }).catch(error => {
+        if (config.error && !error.message.includes('HTTP')) {
+            // Error de red o timeout
+            const xhr = { status: 0, statusText: 'error', responseText: null, responseJSON: null };
+            config.error(xhr, 'error', error);
+        }
+        throw error;
+    });
+    
+    // Función auxiliar para hacer que una promesa tenga métodos jQuery
+    function makeJQueryPromise(promise) {
+        // Si ya tiene los métodos, retornarla
+        if (promise.done && promise.fail) return promise;
+        
+        // Agregar métodos .done() y .fail()
+        promise.done = function(callback) {
+            const newPromise = promise.then(callback);
+            return makeJQueryPromise(newPromise);
+        };
+        
+        promise.fail = function(callback) {
+            const newPromise = promise.catch(callback);
+            return makeJQueryPromise(newPromise);
+        };
+        
+        return promise;
+    }
+    
+    // Hacer que la promesa tenga métodos jQuery
+    return makeJQueryPromise(jqueryPromise);
+};
+
+/**
+ * Realiza petición GET
+ * @param {string} url - URL del recurso
+ * @param {Object} [data] - Datos a enviar
+ * @param {Function} [success] - Función de éxito
+ * @param {string} [dataType] - Tipo de datos esperado
+ * @returns {Promise} Promesa que resuelve con la respuesta
+ */
+$.get = function(url, data, success, dataType) {
+    // Manejar sobrecarga de argumentos
+    if (typeof data === 'function') {
+        dataType = success;
+        success = data;
+        data = undefined;
+    }
+    
+    return $.ajax({
+        url: url,
+        method: 'GET',
+        data: data,
+        success: success,
+        dataType: dataType
+    });
+};
+
+/**
+ * Realiza petición POST
+ * @param {string} url - URL del recurso
+ * @param {Object} [data] - Datos a enviar
+ * @param {Function} [success] - Función de éxito
+ * @param {string} [dataType] - Tipo de datos esperado
+ * @returns {Promise} Promesa que resuelve con la respuesta
+ */
+$.post = function(url, data, success, dataType) {
+    // Manejar sobrecarga de argumentos
+    if (typeof data === 'function') {
+        dataType = success;
+        success = data;
+        data = undefined;
+    }
+    
+    return $.ajax({
+        url: url,
+        method: 'POST',
+        data: data,
+        success: success,
+        dataType: dataType
+    });
+};
+
+/**
+ * Realiza petición GET esperando JSON
+ * @param {string} url - URL del recurso
+ * @param {Object} [data] - Datos a enviar
+ * @param {Function} [success] - Función de éxito
+ * @returns {Promise} Promesa que resuelve con el JSON
+ */
+$.getJSON = function(url, data, success) {
+    // Manejar sobrecarga de argumentos
+    if (typeof data === 'function') {
+        success = data;
+        data = undefined;
+    }
+    
+    return $.ajax({
+        url: url,
+        method: 'GET',
+        data: data,
+        dataType: 'json',
+        success: success
+    });
+};
+
+/**
  * Método ready para instancias JRQuery
  * @param {Function} callback - Función a ejecutar cuando el DOM esté listo
  * @returns {JRQuery} Retorna this para encadenamiento
  */
 JRQuery.prototype.ready = function(callback) {
     $.ready(callback);
+    return this;
+};
+
+/**
+ * Carga contenido AJAX en los elementos
+ * @param {string} url - URL del recurso a cargar
+ * @param {Function} [callback] - Función callback opcional
+ * @returns {JRQuery} Instancia actual para chaining
+ */
+JRQuery.prototype.load = function(url, callback) {
+    if (!url) return this;
+    
+    const self = this;
+    
+    this.elements.forEach(element => {
+        $.ajax({
+            url: url,
+            success: function(data) {
+                element.innerHTML = data;
+                if (typeof callback === 'function') {
+                    callback.call(element, data);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading content:', error);
+                element.innerHTML = '<p>Error al cargar el contenido</p>';
+            }
+        }).catch(error => {
+            console.error('Error en .load():', error);
+            element.innerHTML = '<p>Error al cargar el contenido</p>';
+        });
+    });
+    
     return this;
 };
 

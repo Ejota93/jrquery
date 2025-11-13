@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test AJAX Simple - JRQuery</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .demo-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .demo-button { background: #007bff; color: white; border: none; padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .demo-button:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; min-height: 50px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Test AJAX Simple - JRQuery</h1>
+    
+    <div class="demo-section">
+        <h3>Test $.get() con .done()/.fail()</h3>
+        <button class="demo-button" id="test-get">Test $.get()</button>
+        <div class="result" id="get-result">Esperando...</div>
+    </div>
+    
+    <div class="demo-section">
+        <h3>Test $.post() con .done()/.fail()</h3>
+        <button class="demo-button" id="test-post">Test $.post()</button>
+        <div class="result" id="post-result">Esperando...</div>
+    </div>
+    
+    <div class="demo-section">
+        <h3>Test $.getJSON() con .done()/.fail()</h3>
+        <button class="demo-button" id="test-getjson">Test $.getJSON()</button>
+        <div class="result" id="getjson-result">Esperando...</div>
+    </div>
+    
+    <div class="demo-section">
+        <h3>Test $.ajax() con .done()/.fail()</h3>
+        <button class="demo-button" id="test-ajax">Test $.ajax()</button>
+        <div class="result" id="ajax-result">Esperando...</div>
+    </div>
+
+    <script type="module">
+        import { $ } from './src/jrquery.js';
+        
+        $(document).ready(function() {
+            console.log('✅ JRQuery cargado y listo');
+            
+            // Test $.get()
+            $('#test-get').on('click', function() {
+                const $result = $('#get-result');
+                $result.text('Cargando...').removeClass('error').addClass('success');
+                
+                console.log('Probando $.get()...');
+                const promise = $.get('https://jsonplaceholder.typicode.com/posts/1');
+                console.log('Promesa retornada:', promise);
+                console.log('¿Tiene .done?:', typeof promise.done === 'function');
+                console.log('¿Tiene .fail?:', typeof promise.fail === 'function');
+                
+                promise
+                    .done(function(data) {
+                        console.log('$.get() exitoso:', data);
+                        $result.html(`
+                            <strong>POST #${data.id}:</strong><br>
+                            <strong>Título:</strong> ${data.title}<br>
+                            <strong>Body:</strong> ${data.body.substring(0, 50)}...
+                        `);
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('$.get() fallido:', error);
+                        $result.text(`Error: ${error}`).removeClass('success').addClass('error');
+                    });
+            });
+            
+            // Test $.post()
+            $('#test-post').on('click', function() {
+                const $result = $('#post-result');
+                $result.text('Enviando...').removeClass('error').addClass('success');
+                
+                const postData = {
+                    title: 'Test JRQuery Post',
+                    body: 'Este es un post de prueba',
+                    userId: 1
+                };
+                
+                console.log('Probando $.post()...');
+                const promise = $.post('https://jsonplaceholder.typicode.com/posts', postData);
+                console.log('Promesa retornada:', promise);
+                console.log('¿Tiene .done?:', typeof promise.done === 'function');
+                console.log('¿Tiene .fail?:', typeof promise.fail === 'function');
+                
+                promise
+                    .done(function(data) {
+                        console.log('$.post() exitoso:', data);
+                        $result.html(`
+                            <strong>Post creado #${data.id}:</strong><br>
+                            <strong>Título:</strong> ${data.title}<br>
+                            <strong>Usuario:</strong> ${data.userId}
+                        `);
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('$.post() fallido:', error);
+                        $result.text(`Error: ${error}`).removeClass('success').addClass('error');
+                    });
+            });
+            
+            // Test $.getJSON()
+            $('#test-getjson').on('click', function() {
+                const $result = $('#getjson-result');
+                $result.text('Cargando JSON...').removeClass('error').addClass('success');
+                
+                console.log('Probando $.getJSON()...');
+                const promise = $.getJSON('https://jsonplaceholder.typicode.com/users/1');
+                console.log('Promesa retornada:', promise);
+                console.log('¿Tiene .done?:', typeof promise.done === 'function');
+                console.log('¿Tiene .fail?:', typeof promise.fail === 'function');
+                
+                promise
+                    .done(function(user) {
+                        console.log('$.getJSON() exitoso:', user);
+                        $result.html(`
+                            <strong>Usuario:</strong> ${user.name}<br>
+                            <strong>Email:</strong> ${user.email}<br>
+                            <strong>Ciudad:</strong> ${user.address.city}
+                        `);
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('$.getJSON() fallido:', error);
+                        $result.text(`Error: ${error}`).removeClass('success').addClass('error');
+                    });
+            });
+            
+            // Test $.ajax()
+            $('#test-ajax').on('click', function() {
+                const $result = $('#ajax-result');
+                $result.text('Cargando con AJAX...').removeClass('error').addClass('success');
+                
+                console.log('Probando $.ajax()...');
+                const promise = $.ajax({
+                    url: 'https://jsonplaceholder.typicode.com/todos/1',
+                    method: 'GET',
+                    dataType: 'json',
+                    timeout: 5000
+                });
+                console.log('Promesa retornada:', promise);
+                console.log('¿Tiene .done?:', typeof promise.done === 'function');
+                console.log('¿Tiene .fail?:', typeof promise.fail === 'function');
+                
+                promise
+                    .done(function(data) {
+                        console.log('$.ajax() exitoso:', data);
+                        $result.html(`
+                            <strong>Tarea #${data.id}:</strong><br>
+                            <strong>Título:</strong> ${data.title}<br>
+                            <strong>Completada:</strong> ${data.completed ? 'Sí' : 'No'}
+                        `);
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('$.ajax() fallido:', status, error);
+                        $result.text(`Error AJAX: ${status} - ${error}`).removeClass('success').addClass('error');
+                    });
+            });
+            
+            console.log('✅ Todos los eventos configurados');
+        });
+    </script>
+</body>
+</html>

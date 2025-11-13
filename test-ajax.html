@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fase 4 - AJAX</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .demo-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .demo-button { background: #007bff; color: white; border: none; padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .demo-button:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; min-height: 50px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Test Fase 4 - AJAX</h1>
+    
+    <div class="demo-section">
+        <h3>Test $.get()</h3>
+        <button class="demo-button" id="test-get">Test $.get()</button>
+        <div class="result" id="get-result">Esperando...</div>
+    </div>
+    
+    <div class="demo-section">
+        <h3>Test $.post()</h3>
+        <button class="demo-button" id="test-post">Test $.post()</button>
+        <div class="result" id="post-result">Esperando...</div>
+    </div>
+    
+    <div class="demo-section">
+        <h3>Test $.ajax()</h3>
+        <button class="demo-button" id="test-ajax">Test $.ajax()</button>
+        <div class="result" id="ajax-result">Esperando...</div>
+    </div>
+    
+    <div class="demo-section">
+        <h3>Test .load()</h3>
+        <button class="demo-button" id="test-load">Test .load()</button>
+        <div class="result" id="load-container">Contenedor vacío</div>
+        <div class="result" id="load-result">Esperando...</div>
+    </div>
+
+    <script type="module">
+        import { $ } from './src/jrquery.js';
+        
+        $(document).ready(function() {
+            console.log('✅ JRQuery cargado y listo');
+            
+            // Test $.get()
+            $('#test-get').on('click', function() {
+                const $result = $('#get-result');
+                $result.text('Cargando...').removeClass('error').addClass('success');
+                
+                $.get('https://jsonplaceholder.typicode.com/posts/1')
+                    .done(function(data) {
+                        console.log('$.get() exitoso:', data);
+                        $result.html(`
+                            <strong>POST #${data.id}:</strong><br>
+                            <strong>Título:</strong> ${data.title}<br>
+                            <strong>Body:</strong> ${data.body.substring(0, 50)}...
+                        `);
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('$.get() fallido:', error);
+                        $result.text(`Error: ${error}`).removeClass('success').addClass('error');
+                    });
+            });
+            
+            // Test $.post()
+            $('#test-post').on('click', function() {
+                const $result = $('#post-result');
+                $result.text('Enviando...').removeClass('error').addClass('success');
+                
+                const postData = {
+                    title: 'Test JRQuery Post',
+                    body: 'Este es un post de prueba',
+                    userId: 1
+                };
+                
+                $.post('https://jsonplaceholder.typicode.com/posts', postData)
+                    .done(function(data) {
+                        console.log('$.post() exitoso:', data);
+                        $result.html(`
+                            <strong>Post creado #${data.id}:</strong><br>
+                            <strong>Título:</strong> ${data.title}<br>
+                            <strong>Usuario:</strong> ${data.userId}
+                        `);
+                    })
+                    .fail(function(xhr, status, error) {
+                        console.error('$.post() fallido:', error);
+                        $result.text(`Error: ${error}`).removeClass('success').addClass('error');
+                    });
+            });
+            
+            // Test $.ajax()
+            $('#test-ajax').on('click', function() {
+                const $result = $('#ajax-result');
+                $result.text('Cargando con AJAX...').removeClass('error').addClass('success');
+                
+                $.ajax({
+                    url: 'https://jsonplaceholder.typicode.com/todos/1',
+                    method: 'GET',
+                    dataType: 'json',
+                    timeout: 5000,
+                    success: function(data) {
+                        console.log('$.ajax() exitoso:', data);
+                        $result.html(`
+                            <strong>Tarea #${data.id}:</strong><br>
+                            <strong>Título:</strong> ${data.title}<br>
+                            <strong>Completada:</strong> ${data.completed ? 'Sí' : 'No'}
+                        `);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('$.ajax() fallido:', status, error);
+                        $result.text(`Error AJAX: ${status} - ${error}`).removeClass('success').addClass('error');
+                    }
+                });
+            });
+            
+            // Test .load()
+            $('#test-load').on('click', function() {
+                const $container = $('#load-container');
+                const $result = $('#load-result');
+                
+                $result.text('Cargando con .load()...').removeClass('error').addClass('success');
+                
+                // Usar $.ajax internamente para simular .load()
+                $.ajax({
+                    url: 'https://jsonplaceholder.typicode.com/posts/1',
+                    success: function(data) {
+                        const htmlContent = `
+                            <div class="loaded-content">
+                                <h4>Contenido Cargado con .load()</h4>
+                                <p><strong>Post #${data.id}:</strong> ${data.title}</p>
+                                <p>${data.body}</p>
+                                <small>Cargado el ${new Date().toLocaleTimeString()}</small>
+                            </div>
+                        `;
+                        $container.html(htmlContent);
+                        $result.text('Contenido cargado exitosamente');
+                        
+                        setTimeout(() => $result.text(''), 2000);
+                    },
+                    error: function(xhr, status, error) {
+                        $result.text('Error al cargar: ' + error).removeClass('success').addClass('error');
+                    }
+                });
+            });
+            
+            console.log('✅ Todos los eventos configurados');
+        });
+    </script>
+</body>
+</html>
